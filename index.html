@@ -41,9 +41,49 @@ h1 span{background:linear-gradient(90deg,#6cb6ff,#b58cff);-webkit-background-cli
 
 .card,.hd,.t,.g{min-width:0}.lv{min-width:0}
 @media (max-aspect-ratio:3/2){.grid{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr))}}
+
+#views{flex:1;min-height:0;position:relative}
+.view{position:absolute;inset:0;display:flex;flex-direction:column;gap:1.6rem;opacity:0;visibility:hidden;transition:opacity .9s ease,visibility .9s}
+.view.on{opacity:1;visibility:visible}
+#dots{display:flex;gap:1rem}#dots i{width:1.3rem;height:1.3rem;border-radius:50%;background:#ffffff33;transition:background .4s,transform .4s}#dots i.on{background:#6cb6ff;transform:scale(1.35)}
+.vt{flex:none;display:flex;align-items:baseline;gap:2rem;font-size:3.4rem;font-weight:800;letter-spacing:.1rem}
+.vt span{font-size:2.2rem;color:var(--mut);font-weight:600;letter-spacing:0}
+.cols{flex:1;min-height:0;display:grid;gap:2rem}
+.tb{min-height:0;min-width:0;overflow:hidden;display:flex;flex-direction:column;border-radius:1.6rem;background:linear-gradient(160deg,#16213a,#0d1220);border:1px solid #ffffff1a;padding:.6rem 1.2rem}
+.tb .cp{font-weight:800;color:#fff;letter-spacing:.1rem;display:flex;align-items:center}
+.tb .rw{display:grid;align-items:center;column-gap:.5em;height:var(--rh);font-size:var(--fs);border-bottom:1px solid #ffffff10;white-space:nowrap}
+.tb .rw>*{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.tb .rw.h{color:var(--mut);font-weight:700;font-size:calc(var(--fs)*.8);border-bottom:1px solid #ffffff30}
+.tb .rw .n{text-align:right;font-variant-numeric:tabular-nums}
+.tb .rw.h .n,.tb .rw .c{text-align:center}
+.tb .rw b{font-weight:800;color:#fff}
+.tb .rw img{width:1.5em;height:1.5em;object-fit:contain}
+.tb .rw .pt{font-weight:800;color:#fff}
+.tb .rw.cut{border-bottom:2px dashed #ff3b4e99}
+.tb .rw .up{color:var(--win)}.tb .rw .dn{color:var(--loss)}
+#tk{flex:none;position:relative;height:9.6rem;margin:0 -2.8rem -2.2rem;overflow:hidden;background:linear-gradient(180deg,#101a30,#05070d);border-top:0.3rem solid #ff3b4e;box-shadow:0 -1rem 3rem #000a;display:flex;align-items:stretch}
+#tl{flex:none;width:30rem;position:relative;z-index:2;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 1.4rem;background:var(--cc,#c8102e);color:#fff;font-weight:900;font-size:3.4rem;line-height:1;letter-spacing:.15rem;text-transform:uppercase;box-shadow:0.8rem 0 2rem #000b;transition:transform .35s ease,opacity .35s ease}
+#tl small{display:block;font-size:1.7rem;font-weight:700;letter-spacing:.2rem;opacity:.85;margin-top:.7rem}
+#tl.out{transform:translateY(-35%);opacity:0}
+#tl.pre{transform:translateY(35%);opacity:0;transition:none}
+#tv{flex:1;position:relative;overflow:hidden;min-width:0}
+#tr{position:absolute;left:0;top:0;height:100%;display:flex;align-items:center;white-space:nowrap;will-change:transform}
+.cell{flex:none;display:flex;align-items:center;gap:1.6rem;height:100%;padding:0 2.6rem;border-right:1px solid #ffffff22;font-size:3.2rem;font-weight:800}
+.tm2{display:flex;align-items:center;gap:.8rem}
+.tm2 img{width:4.8rem;height:4.8rem;object-fit:contain}
+.tm2 .ab{letter-spacing:.05rem}
+.tm2 .rk{color:#ffd166;font-size:2rem;font-weight:800;margin-right:-.3rem}
+.tm2 .s{font-variant-numeric:tabular-nums;color:#fff;margin-left:.3rem}
+.tm2.lo{color:#9aa4ba}.tm2.lo .s{color:#9aa4ba}
+.vs{color:var(--mut);font-size:2.2rem;font-weight:600}
+.stt{display:flex;flex-direction:column;justify-content:center;gap:.4rem;font-size:2.3rem;font-weight:700;color:var(--mut);line-height:1.1;min-width:11rem}
+.stt .ck{color:#ff8a96;font-weight:800}
+.stt .fn{color:#fff;letter-spacing:.15rem;font-weight:800}
+.stt .badge{font-size:1.9rem;padding:.3rem 1.2rem;align-self:flex-start}
+.msg{color:var(--mut);font-size:2.6rem;font-weight:700;padding:0 3rem}
 </style></head><body>
-<header><h1><span>SCOREBOARD</span></h1><div id="u"></div></header>
-<div id="live"></div><div class="grid" id="g"></div>
+<header><h1><span>SCOREBOARD</span></h1><div style="display:flex;align-items:center;gap:2rem"><div id="dots"></div><div id="u"></div></div></header>
+<div id="views"><div class="view on" id="v0"><div id="live"></div><div class="grid" id="g"></div></div></div><div id="tk"><div id="tl"><span id="tlt">SCORES</span></div><div id="tv"><div id="tr"><span class="msg">Loading scores…</span></div></div></div>
 <script>
 const E='https://site.web.api.espn.com/apis/site/v2/sports/',S='https://www.thesportsdb.com/api/v1/json/123/';
 const AH='https://lscluster.hockeytech.com/feed/index.php?key=50c2cd9b5e18e390&client_code=ahl&lang=en&fmt=json&feed=modulekit&';
@@ -135,4 +175,143 @@ function fit(){const r=document.documentElement;let f=1.3;r.style.setProperty('-
  while(bad()&&f>.45){f-=.04;r.style.setProperty('--f',f.toFixed(2))}}
 addEventListener('resize',fit);
 load();setInterval(load,60000);
+// ===== rotating views =====
+const SV='https://site.web.api.espn.com/apis/v2/sports/',SR='https://site.web.api.espn.com/apis/site/v2/sports/';
+const svData={},svStat={};window.svStat=svStat;
+const stv=(e,n)=>{const s=(e.stats||[]).find(x=>x.name===n);return s?+s.value:0};
+const tlogo=t=>(t.logos&&t.logos[0]&&t.logos[0].href)||t.logo||'';
+const im=u=>u?`<img src="${esc(u)}" alt="" onerror="this.style.visibility='hidden'">`:'<span></span>';
+async function svEntries(path,qs){const j=await J(SV+path+'/standings'+(qs||''));return j}
+function rankTbl(r){const rk=r.ranks.slice(0,25).map(x=>{const t=x.team,d=x.previous?x.previous-x.current:0;
+  return [`<b class="n">${x.current}</b>`,im(tlogo(t)),`<b>${esc(t.location||t.nickname)}</b>`,`<span class="c">${esc(x.recordSummary||'')}</span>`,`<span class="c ${d>0?'up':d<0?'dn':''}">${d>0?'▲'+d:d<0?'▼'+-d:'–'}</span>`]});
+ const G='2.4em 1.6em 1fr 4.2em 3.2em',H=['#','','Team','Rec','Δ'];
+ return [{g:G,h:H,rows:rk.slice(0,13)},{g:G,h:H,rows:rk.slice(13)}]}
+async function svLoadAll(){
+ const T={};
+ const run=async(k,f)=>{try{T[k]=await f();svStat[k]='ok'}catch(e){console.warn('view',k,e.message);svStat[k]='error: '+e.message;if(svData[k])T[k]=svData[k]}};
+ await Promise.all([
+ run('ncaaf',async()=>{const j=await J(SR+'football/college-football/rankings');const r=j.rankings.find(x=>x.type==='ap')||j.rankings[0];
+   return {title:'NCAAF AP Top 25',sub:r.occurrence.displayValue+' · '+new Date(r.date).toLocaleDateString([],{month:'short',day:'numeric'}),tables:rankTbl(r),cols:2}}),
+ run('ncaam',async()=>{const j=await J(SR+'basketball/mens-college-basketball/rankings');const r=j.rankings.find(x=>x.type==='ap')||j.rankings[0];
+   const d=new Date(r.date),old=Date.now()-d>120*864e5;
+   return {title:'NCAA Men’s Basketball AP Top 25',sub:old?'Final poll of last season ('+d.toLocaleDateString([],{month:'short',day:'numeric',year:'numeric'})+') · 2026-27 preseason poll not released yet':'Preseason/Week poll · '+r.occurrence.displayValue,tables:rankTbl(r),cols:2}}),
+ run('nhl',async()=>{const j=await svEntries('hockey/nhl');
+   return {title:'NHL Standings',sub:'Dashed line = top 8 in conference',cols:2,tables:j.children.map(c=>{const es=c.standings.entries.slice().sort((a,b)=>(stv(a,'playoffSeed')||99)-(stv(b,'playoffSeed')||99)||stv(b,'points')-stv(a,'points'));
+     return {cap:c.name.replace(' Conference',''),g:'2em 1.6em 1fr repeat(4,2.4em) 2.8em',h:['#','','Team','GP','W','L','OTL','PTS'],cutAt:8,
+      rows:es.map((e,i)=>[`<span class="n">${i+1}</span>`,im(tlogo(e.team)),`<b>${esc(e.team.shortDisplayName||e.team.displayName)}</b>`,...['gamesPlayed','wins','losses','otLosses'].map(k=>`<span class="n">${stv(e,k)}</span>`),`<span class="n pt">${stv(e,'points')}</span>`])}})}}),
+ run('nfl',async()=>{const j=await svEntries('football/nfl');
+   return {title:'NFL Standings',sub:'Dashed line = 7 playoff seeds per conference',cols:2,tables:j.children.map(c=>{const es=c.standings.entries.slice().sort((a,b)=>(stv(a,'playoffSeed')||99)-(stv(b,'playoffSeed')||99)||stv(b,'winPercent')-stv(a,'winPercent'));
+     return {cap:c.name.includes('American')?'AFC':'NFC',g:'2em 1.6em 1fr repeat(3,2.2em) 3.6em',h:['#','','Team','W','L','T','PCT'],cutAt:7,
+      rows:es.map((e,i)=>[`<span class="n">${i+1}</span>`,im(tlogo(e.team)),`<b>${esc(e.team.shortDisplayName||e.team.displayName)}</b>`,`<span class="n">${stv(e,'wins')}</span>`,`<span class="n">${stv(e,'losses')}</span>`,`<span class="n">${stv(e,'ties')}</span>`,`<span class="n pt">${stv(e,'winPercent').toFixed(3).replace(/^0/,'')}</span>`])}})}}),
+ run('ahl',async()=>{const d=await jsonp('https://lscluster.hockeytech.com/feed/index.php?key=50c2cd9b5e18e390&client_code=ahl&lang=en&fmt=json&feed=statviewfeed&view=teams&groupTeamsBy=division&context=overall&site_id=3&season=94&special=false&division=-1');
+   const secs=d[0].sections;if(!secs||!secs.length)throw new Error('empty');
+   return {title:'AHL Standings',sub:'By division',cols:secs.length,tables:secs.map(s=>({cap:s.headers.name.properties.title.replace(' Division',''),w:17,g:'1.4em 1fr repeat(4,1.8em) 2.2em',h:['#','Team','GP','W','L','OT','PTS'],
+     rows:s.data.map(x=>{const r=x.row;return [`<span class="n">${r.rank}</span>`,`<b>${esc(r.team_code)}</b>`,`<span class="n">${r.games_played}</span>`,`<span class="n">${r.wins}</span>`,`<span class="n">${r.losses}</span>`,`<span class="n">${+r.ot_losses+ +r.shootout_losses}</span>`,`<span class="n pt">${r.points}</span>`]})}))}}),
+ run('liga',async()=>{
+   const [a,c]=await Promise.all([svEntries('soccer/per.1','?season=2026&seasontype=1'),svEntries('soccer/per.1')]);
+   const ea=a.children[0].standings.entries,ec=c.children[0].standings.entries;
+   const mkE=e=>({id:e.team.id,name:e.team.shortDisplayName||e.team.displayName,logo:tlogo(e.team),pj:stv(e,'gamesPlayed'),w:stv(e,'wins'),d:stv(e,'ties'),l:stv(e,'losses'),gf:stv(e,'pointsFor'),ga:stv(e,'pointsAgainst'),pts:stv(e,'points')});
+   const A=ea.map(mkE),C=ec.map(mkE),m={};
+   [...A,...C].forEach(x=>{const o=m[x.id]||(m[x.id]={...x,pj:0,w:0,d:0,l:0,gf:0,ga:0,pts:0});if(o!==x)['pj','w','d','l','gf','ga','pts'].forEach(k=>o[k]+=x[k])});
+   const srt=l=>l.slice().sort((x,y)=>y.pts-x.pts||(y.gf-y.ga)-(x.gf-x.ga)||y.gf-x.gf);
+   const mt=l=>{const L=srt(l),G='2em 1.6em 1fr repeat(5,2.4em) 2.8em',H=['#','','Equipo','PJ','G','E','P','DG','PTS'];
+    const rows=L.map((x,i)=>[`<span class="n">${i+1}</span>`,im(x.logo),`<b>${esc(x.name)}</b>`,`<span class="n">${x.pj}</span>`,`<span class="n">${x.w}</span>`,`<span class="n">${x.d}</span>`,`<span class="n">${x.l}</span>`,`<span class="n">${x.gf-x.ga>0?'+':''}${x.gf-x.ga}</span>`,`<span class="n pt">${x.pts}</span>`]);
+    const h=Math.ceil(rows.length/2);return [{g:G,h:H,rows:rows.slice(0,h)},{g:G,h:H,rows:rows.slice(h)}]};
+   return {ap:{title:'Liga 1 Perú · Apertura 2026',sub:'Final table (ESPN)',tables:mt(A),cols:2},cl:{title:'Liga 1 Perú · Clausura 2026',sub:'In progress (ESPN)',tables:mt(C),cols:2},ac:{title:'Liga 1 Perú · Tabla Acumulada 2026',sub:'Apertura + Clausura, calculated from both ESPN tables',tables:mt(Object.values(m)),cols:2}}})]);
+ const L=T.liga||{};
+ Object.assign(svData,{ncaaf:T.ncaaf,ncaam:T.ncaam,nhl:T.nhl,ahl:T.ahl,ap:L.ap,cl:L.cl,ac:L.ac,nfl:T.nfl,liga:T.liga});
+ svRender()}
+const ORDER=['cards','ncaaf','ncaam','nhl','ahl','ap','cl','ac','nfl'];
+function svHtml(v){return `<div class="vt">${esc(v.title)}<span>${esc(v.sub||'')}</span></div><div class="cols" style="grid-template-columns:repeat(${v.cols},minmax(0,1fr))">`+v.tables.map(t=>`<div class="tb" data-n="${t.rows.length}" data-cap="${t.cap?1:0}" data-w="${t.w||0}">${t.cap?`<div class="cp">${esc(t.cap)}</div>`:''}<div class="rw h" style="grid-template-columns:${t.g}">${t.h.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`+t.rows.map((r,i)=>`<div class="rw${t.cutAt&&i+1===t.cutAt?' cut':''}" style="grid-template-columns:${t.g}">${r.join('')}</div>`).join('')+'</div>').join('')+'</div>'}
+function svRender(){const root=document.getElementById('views');
+ for(const k of ORDER){if(k==='cards')continue;let el=document.getElementById('v-'+k);const v=svData[k];
+  if(!v){if(el)el.remove();continue}
+  if(!el){el=document.createElement('div');el.className='view';el.id='v-'+k;root.appendChild(el)}
+  el.innerHTML=svHtml(v)}
+ svLayout();svDots()}
+function svLayout(){document.querySelectorAll('.view .tb').forEach(tb=>{const n=+tb.dataset.n,cap=tb.dataset.cap==='1';
+  const avail=tb.clientHeight-parseFloat(getComputedStyle(tb).paddingTop)*2,rows=n+1+(cap?1.2:0);const rh=Math.floor(avail/rows*10)/10;
+  tb.style.setProperty('--rh',rh+'px');const wl=+tb.dataset.w?(tb.clientWidth-24)/+tb.dataset.w:1e9;tb.style.setProperty('--fs',Math.min(wl,rh*.62,parseFloat(getComputedStyle(document.documentElement).fontSize)*3)+'px');
+  const cp=tb.querySelector('.cp');if(cp){cp.style.height=rh*1.2+'px';cp.style.fontSize=Math.min(rh*.7,parseFloat(getComputedStyle(document.documentElement).fontSize)*3.4)+'px'}})}
+let svCur=0;const svList=()=>ORDER.filter(k=>k==='cards'||svData[k]);
+function svDots(){const l=svList();document.getElementById('dots').innerHTML=l.map(k=>`<i class="${k===l[svCur%l.length]?'on':''}"></i>`).join('')}
+function svShow(i){const l=svList();svCur=((i%l.length)+l.length)%l.length;
+ document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id===(l[svCur]==='cards'?'v0':'v-'+l[svCur])));svDots()}
+window.svShow=svShow;window.svList=svList;
+const still=/still/.test(location.hash);
+setInterval(()=>{if(!still)svShow(svCur+1)},20000);
+addEventListener('resize',()=>{svLayout()});
+svLoadAll();setInterval(svLoadAll,300000);
+// ===== ESPN BottomLine-style ticker =====
+const LG=[
+ {tag:'NCAAF',sub:'Top 25',c:'#c8102e',p:'football/college-football',q:'groups=80&limit=300',rank:true},
+ {tag:'NHL',c:'#0b5cab',p:'hockey/nhl'},
+ {tag:'NFL',c:'#013369',p:'football/nfl'},
+ {tag:'AHL',c:'#0d8a5e',ahl:true},
+ {tag:'LIGA 1',sub:'Perú',c:'#d91023',p:'soccer/per.1'},
+ {tag:'SUDAMERICANA',c:'#0a7bb8',p:'soccer/conmebol.sudamericana'},
+ {tag:'LIBERTADORES',c:'#9a6b00',p:'soccer/conmebol.libertadores'}];
+const ymd=d=>d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+const lima=d=>d.toLocaleString('en-US',{timeZone:'America/Lima',weekday:'short',hour:'numeric',minute:'2-digit'}).replace(',','').toUpperCase();
+async function tkEspn(L){
+ const days=[];for(let i=-3;i<=5;i++)days.push(ymd(new Date(Date.now()+i*864e5)));
+ const rs=await Promise.allSettled(days.map(d=>J(E+L.p+'/scoreboard?'+(L.q?L.q+'&':'')+'dates='+d)));
+ if(rs.every(r=>r.status!=='fulfilled'))throw new Error('all failed');
+ const seen=new Set(),out=[];
+ for(const r of rs)if(r.status==='fulfilled')for(const e of r.value.events||[]){if(seen.has(e.id))continue;seen.add(e.id);
+  const c=e.competitions[0],cs=c.competitors,h=cs.find(x=>x.homeAway==='home'),a=cs.find(x=>x.homeAway==='away');if(!h||!a)continue;
+  const rk=x=>{const n=x.curatedRank&&x.curatedRank.current;return n&&n<=25?n:0};
+  if(L.rank&&!rk(h)&&!rk(a))continue;
+  const st=e.status.type.state,mk2=x=>({n:x.team.abbreviation||x.team.shortDisplayName,lg:logo(x.team),r:L.rank?rk(x):0,s:x.score==null?'':String(x.score),w:!!x.winner});
+  out.push({id:e.id,t:new Date(e.date),st,a:mk2(a),h:mk2(h),det:e.status.type.shortDetail,fin:e.status.type.detail});}
+ return out}
+async function tkAhl(){
+ const d=await jsonp(AH+'view=scorebar&numberofdaysback=3&numberofdaysahead=7');
+ const lg=id=>id?'https://assets.leaguestat.com/ahl/logos/'+id+'.png':'';
+ return d.SiteKit.Scorebar.map(x=>{const st=x.GameStatus==='4'?'post':x.GameStatus==='2'?'in':'pre',hg=+x.HomeGoals,vg=+x.VisitorGoals;
+  return {id:x.ID,t:new Date(x.GameDateISO8601),st,a:{n:x.VisitorCode||x.VisitorNickname,lg:lg(x.VisitorID),r:0,s:String(x.VisitorGoals),w:st==='post'&&vg>hg},h:{n:x.HomeCode||x.HomeNickname,lg:lg(x.HomeID),r:0,s:String(x.HomeGoals),w:st==='post'&&hg>vg},
+   det:st==='in'?(x.Intermission==='1'?'INT ':'')+(x.PeriodNameShort||'')+' '+x.GameClock:(/SO|OT/.test(x.GameStatusString||'')?'F/'+(x.GameStatusString.match(/SO|OT/)||[''])[0]:'Final')}})}
+const tkLast={};
+async function tkLoad(){
+ await Promise.all(LG.map(async L=>{try{tkLast[L.tag]=await(L.ahl?tkAhl():tkEspn(L))}catch(e){console.warn('ticker',L.tag,e.message);if(!tkLast[L.tag])tkLast[L.tag]=[]}}))}
+function tkGames(L){const now=Date.now(),cut=now-3*864e5,g=tkLast[L.tag]||[];
+ const live=g.filter(x=>x.st==='in').sort((a,b)=>a.t-b.t),
+  up=g.filter(x=>x.st==='pre'&&x.t>=now-36e5).sort((a,b)=>a.t-b.t),
+  fin=g.filter(x=>x.st==='post'&&x.t>=cut).sort((a,b)=>b.t-a.t);
+ return [...live,...up,...fin].slice(0,14)}
+function tkCell(x){
+ const tmh=(t,lose)=>`<div class="tm2${lose?' lo':''}">${t.lg?`<img src="${esc(t.lg)}" alt="" onerror="this.style.visibility='hidden'">`:''}${t.r?`<span class="rk">${t.r}</span>`:''}<span class="ab">${esc(t.n)}</span>${x.st==='pre'?'':`<span class="s">${esc(t.s)}</span>`}</div>`;
+ let stt;
+ if(x.st==='in')stt=`<div class="stt"><span class="badge"><span class="dot"></span>LIVE</span><span class="ck">${esc(x.det)}</span></div>`;
+ else if(x.st==='pre')stt=`<div class="stt"><span>${esc(lima(x.t))}</span><span style="font-size:1.8rem">LIMA (UTC-5)</span></div>`;
+ else stt=`<div class="stt"><span class="fn">${/OT|SO/.test(x.det)?esc(x.det.toUpperCase()):'FINAL'}</span></div>`;
+ return `<div class="cell">${tmh(x.a,x.st==='post'&&x.h.w)}<span class="vs">${x.st==='pre'?'@':''}</span>${tmh(x.h,x.st==='post'&&x.a.w)}${stt}</div>`}
+// scheduler
+const tkS={i:-1,phase:'idle',x:0,w:0,t0:0,vw:0};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+function tkNext(){ // returns next league with games, or null
+ for(let k=1;k<=LG.length;k++){const i=(tkS.i+k)%LG.length;if(tkGames(LG[i]).length)return i}return null}
+async function tkStart(L2,i){
+ const tl=document.getElementById('tl'),tr=document.getElementById('tr'),tlt=document.getElementById('tlt');
+ const first=tkS.i<0||tl.dataset.tag!==undefined&&false;
+ tkS.phase='label';tl.classList.add('out');await sleep(first?0:350);
+ tkS.i=i;tl.dataset.tag=L2.tag;tl.style.setProperty('--cc',L2.c);tlt.innerHTML=esc(L2.tag)+(L2.sub?`<small>${esc(L2.sub)}</small>`:'');
+ tr.innerHTML=tkGames(L2).map(tkCell).join('');tkS.x=tkS.vw=document.getElementById('tv').clientWidth;tr.style.transform=`translateX(${tkS.x}px)`;
+ tkS.w=tr.scrollWidth;
+ tl.classList.add('pre');tl.classList.remove('out');void tl.offsetWidth;tl.classList.remove('pre');
+ tkS.long=tkS.w>tkS.vw;tkS.t0=0;tkS.phase=tkS.long?'scroll':'slide'}
+function tkFrame(t){
+ const tr=document.getElementById('tr'),rem=parseFloat(getComputedStyle(document.documentElement).fontSize);
+ const dt=tkS.t0?Math.min(t-tkS.t0,100):0;tkS.t0=t;
+ if(tkS.phase==='scroll'){tkS.x-=dt/1000*18*rem;tr.style.transform=`translateX(${tkS.x}px)`;if(tkS.x<=-tkS.w){tkS.phase='busy';tkAdvance()}}
+ else if(tkS.phase==='slide'){ // short list: ease in, dwell, then advance
+  tkS.el=(tkS.el||0)+dt;const k=Math.min(tkS.el/700,1),e=1-Math.pow(1-k,3);tkS.x=tkS.vw+((tkS.vw-tkS.w)/2-tkS.vw)*e;tr.style.transform=`translateX(${tkS.x}px)`;
+  if(tkS.el>=700+7000){tkS.el=0;tkS.phase='busy';tkAdvance()}}
+ else if(tkS.phase==='idle'){tkS.el=0;if(tkS.start&&tkNext()!==null)tkAdvance()}
+ requestAnimationFrame(tkFrame)}
+async function tkAdvance(){tkS.el=0;const n=tkNext();
+ if(n===null){document.getElementById('tr').innerHTML='<span class="msg">No games to show right now</span>';document.getElementById('tr').style.transform='none';tkS.phase='idle';return}
+ await tkStart(LG[n],n)}
+tkS.start=false;requestAnimationFrame(tkFrame);
+tkLoad().then(()=>{tkS.start=true;fit()});setInterval(tkLoad,60000);
 </script></body></html>
